@@ -3,7 +3,7 @@ Système de géolocalisation utilisant la technologie LoRa, comprenant des track
 # 1. Partie Tracker
 
 Cette partie comporte un tracker STM (STEVAL-STRKT01 ) qui permet de récupérer les coordonnées GPS ainsi que les valeurs d'un accéléromètre.
-
+![alt tag](url de ton image)
 # 2. Partie Relai
 
 Cette partie comporte une carte LoRa UCA qui permet de récupérer des données d'un émetteur LoRa et de les retransmettre ce qui permet de recevoir les données du tracker de plus loin.
