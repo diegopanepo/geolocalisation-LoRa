@@ -250,7 +250,7 @@
 // For a Raspberry-based gateway the distribution uses a radio.makefile file that can define MAX_DBM
 //
 #ifndef MAX_DBM
-#define MAX_DBM 14
+#define MAX_DBM 20
 #endif
 
 #ifndef LORA_PREAMBLE_LENGTH
@@ -706,7 +706,7 @@ void startConfig() {
   }
   else { */
 
-    e = sx1272.setChannel(CH_17_868);
+    e = sx1272.setChannel(CH_18_868); // DMV
     //PRINT_CSTSTR("%s","^$Frequency ");
     //PRINT_VALUE("%f", 868.0);
     //PRINT_CSTSTR("%s",": state ");      
