@@ -532,8 +532,8 @@
         "type": "function",
         "z": "b10438e6.bafb38",
         "name": "Data9",
-        "func": "var data = JSON.parse(msg.payload);\nvar msg1= { \"payload\": data.packet_number};\nvar msg2= { \"payload\": data.ID_Relay};\n\n\nreturn [msg1,msg2];",
-        "outputs": 2,
+        "func": "var data = JSON.parse(msg.payload);\nvar msg1= { \"payload\": data.packet_number};\nvar msg2= { \"payload\": data.ID_Relay};\nvar msg3= { \"payload\": data.RSSI};\n\nreturn [msg1,msg2,msg3];",
+        "outputs": 3,
         "noerr": 0,
         "x": 690,
         "y": 1660,
@@ -547,6 +547,9 @@
             [
                 "7cc9f6fa.56f0e8",
                 "501fa3fc.aa63bc"
+            ],
+            [
+                "1bed350f.31c0db"
             ]
         ]
     },
@@ -1131,7 +1134,7 @@
         "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"count1\");\nif(msg1-global.get(\"count1\")-1>0){\n    var msg2 = {\"payload\" :msg1-global.get(\"count1\")-1};\n    global.set(\"cpt_lost_terrain\",msg1-global.get(\"count1\")-1+global.get(\"cpt_lost_terrain\"));\n    \n}else{\n    msg2 = {\"payload\" :0};\n}\nglobal.set(\"count1\",msg1);\n//var cpt = {\"payload\" :global.get(\"countS\")};\n\n//global.set(\"countS\",cpt1+cpt);\n//var msg3= {\"payload\": 1};\nvar msg3= {\"payload\": global.get(\"cpt_lost_terrain\")};\nreturn [msg,msg2,msg3];",
         "outputs": 3,
         "noerr": 0,
-        "x": 1070,
+        "x": 1090,
         "y": 80,
         "wires": [
             [
@@ -1391,7 +1394,7 @@
         "type": "function",
         "z": "b10438e6.bafb38",
         "name": "Modif_Variable_Globale",
-        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR3\");\n// Set the future packet\nglobal.set(\"countR3\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}\nreturn msg;",
+        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR3\");\n// Set the future packet\nglobal.set(\"countR3\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}else if (msg.payload==16){\n    msg.payload=\"Relay 2\";\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1090,
@@ -1407,7 +1410,7 @@
         "type": "function",
         "z": "b10438e6.bafb38",
         "name": "Modif_Variable_Globale",
-        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR1\");\n// Set the future packet\nglobal.set(\"countR1\",msg1);\n\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}\nreturn msg;",
+        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR1\");\n// Set the future packet\nglobal.set(\"countR1\",msg1);\n\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}else if (msg.payload==16){\n    msg.payload=\"Relay 2\";\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1090,
@@ -1423,7 +1426,7 @@
         "type": "function",
         "z": "b10438e6.bafb38",
         "name": "Modif_Variable_Globale",
-        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR2\");\n// Set the future packet\nglobal.set(\"countR2\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}\nreturn msg;",
+        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR2\");\n// Set the future packet\nglobal.set(\"countR2\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}else if (msg.payload==16){\n    msg.payload=\"Relay 2\";\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1090,
@@ -1506,7 +1509,7 @@
         "type": "function",
         "z": "b10438e6.bafb38",
         "name": "Modif_Variable_Globale",
-        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR3\");\n// Set the future packet\nglobal.set(\"countR3\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}\nreturn msg;",
+        "func": "\nvar msg1= msg.payload;\nmsg.payload=global.get(\"countR3\");\n// Set the future packet\nglobal.set(\"countR3\",msg1);\nif (msg.payload===0){\n    msg.payload=\"tracker\";\n}else if (msg.payload==1){\n    msg.payload=\"Relay 1\";\n}else if (msg.payload==16){\n    msg.payload=\"Relay 2\";\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1090,
@@ -1743,6 +1746,32 @@
         "wires": []
     },
     {
+        "id": "1bed350f.31c0db",
+        "type": "ui_gauge",
+        "z": "b10438e6.bafb38",
+        "name": "",
+        "group": "60f6adf7.29c144",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Puissance en réception",
+        "label": "dbm",
+        "format": "{{value}}",
+        "min": "-120",
+        "max": "-30",
+        "colors": [
+            "#b30000",
+            "#e6e600",
+            "#3acb4a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 1090,
+        "y": 2000,
+        "wires": []
+    },
+    {
         "id": "bd57e474.b5b808",
         "type": "ui_group",
         "z": "",
@@ -1891,6 +1920,16 @@
         "name": "Tracker UCA (n°9)",
         "tab": "729ad69c.580de",
         "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "60f6adf7.29c144",
+        "type": "ui_group",
+        "z": "",
+        "name": "Data_UCA",
+        "tab": "2013ba9e.797616",
         "disp": true,
         "width": "6",
         "collapse": false

@@ -11,15 +11,14 @@
         "type": "function",
         "z": "4a260dad.a41244",
         "name": "Calcul_distance",
-        "func": "function distance(lat1, lon1, lat2, lon2, unit) {\n\tif ((lat1 == lat2) && (lon1 == lon2)) {\n\t\treturn 0;\n\t}\n\telse {\n\t\tvar radlat1 = Math.PI * lat1/180;\n\t\tvar radlat2 = Math.PI * lat2/180;\n\t\tvar theta = lon1-lon2;\n\t\tvar radtheta = Math.PI * theta/180;\n\t\tvar dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);\n\t\tif (dist > 1) {\n\t\t\tdist = 1;\n\t\t}\n\t\tdist = Math.acos(dist);\n\t\t//dist = dist * 180/Math.PI;\n\t\tdist = dist * 6371; // resultat en km\n\t\t//dist = dist * 60 * 1.1515;\n\t\t//if (unit==\"K\") { dist = dist * 1.609344 }\n\t\t//if (unit==\"N\") { dist = dist * 0.8684 }\n\t\t\n\t\treturn dist;\n\t}\n}\n\nif ( global.get(\"latitude2\")!==0 && global.get(\"latitude3\")!==0){\n    msg.payload=Math.round(distance(global.get(\"latitude2\"),global.get(\"longitude2\"), global.get(\"latitude3\"), global.get(\"longitude3\"), 'K')*1000); //  en mètres\n    //msg.payload=1;\n}else{\n    msg.payload=-1;\n}\nif ( global.get(\"latitude1\")!==0 && global.get(\"latitude2\")!==0){\n    var msg7={\"payload\":Math.round(distance(global.get(\"latitude1\"),global.get(\"longitude1\"), global.get(\"latitude2\"), global.get(\"longitude2\"), 'K')*1000)}; //  en mètres\n}else{\n    msg7={\"payload\":-1};\n}\nvar msg1={\"payload\": global.get(\"latitude2\")};\nvar msg2={\"payload\": global.get(\"latitude3\")};\nvar msg3={\"payload\": global.get(\"longitude2\")};\nvar msg4={\"payload\": global.get(\"longitude3\")};\nvar msg5={\"payload\": global.get(\"latitude1\")};\nvar msg6={\"payload\": global.get(\"longitude1\")};\nreturn [msg,msg1,msg2,msg3,msg4,msg5,msg6,msg7];",
+        "func": "function distance(lat1, lon1, lat2, lon2) {\n\tif ((lat1 == lat2) && (lon1 == lon2)) {\n\t\treturn 0;\n\t}\n\telse {\n\t\tvar radlat1 = Math.PI * lat1/180;\n\t\tvar radlat2 = Math.PI * lat2/180;\n\t\tvar theta = lon1-lon2;\n\t\tvar radtheta = Math.PI * theta/180;\n\t\tvar dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);\n\t\tif (dist > 1) {\n\t\t\tdist = 1;\n\t\t}\n\t\tdist = Math.acos(dist);\n\t\t//dist = dist * 180/Math.PI;\n\t\tdist = dist * 6371; // resultat en km\n\t\t\n\t\treturn dist;\n\t}\n}\n\nvar position = global.get(\"position\");\n\nif ( global.get(\"latitude2\")!==0 && global.get(\"latitude3\")!==0){\n    //msg.payload=Math.round(distance(global.get(\"latitude2\"),global.get(\"longitude2\"), global.get(\"latitude3\"), global.get(\"longitude3\"), 'K')*1000); //  en mètres\n    msg.payload = Math.round(distance(position[2].lat, position[2].lng, position[3].lat, position[3].lng)*1000); // en mètres\n    //msg.payload=1;\n}else{\n    msg.payload=-1;\n}\nif ( global.get(\"latitude1\")!==0 && global.get(\"latitude2\")!==0){\n    //var msg7={\"payload\":Math.round(distance(global.get(\"latitude1\"),global.get(\"longitude1\"), global.get(\"latitude2\"), global.get(\"longitude2\"), 'K')*1000)}; //  en mètres\n    var msg7 = {\"payload\": Math.round(distance(position[1].lat, position[1].lng, position[2].lat, position[2].lng)*1000)}; // en mètres\n}else{\n    msg7={\"payload\":-1};\n}\nvar msg1={\"payload\": position[1].lat};\nvar msg2={\"payload\": position[1].lng};\nvar msg3={\"payload\": position[2].lat};\nvar msg4={\"payload\": position[2].lng};\nvar msg5={\"payload\": position[3].lat};\nvar msg6={\"payload\": position[3].lng};\nreturn [msg,msg1,msg2,msg3,msg4,msg5,msg6,msg7];",
         "outputs": 8,
         "noerr": 0,
         "x": 680,
-        "y": 360,
+        "y": 460,
         "wires": [
             [
                 "b7ef39ac.164b48",
-                "87069892.110fb8",
                 "17835ad1.bbc915"
             ],
             [
@@ -41,7 +40,6 @@
                 "f2fbd6c3.846ed8"
             ],
             [
-                "275f1559.fe485a",
                 "690c4e2d.ea36a"
             ]
         ]
@@ -56,51 +54,11 @@
         "datatype": "auto",
         "broker": "f07646ea.0ac518",
         "x": 150,
-        "y": 160,
+        "y": 280,
         "wires": [
             [
-                "7d2de4c3.48be9c"
-            ]
-        ]
-    },
-    {
-        "id": "79ea1305.7030ec",
-        "type": "switch",
-        "z": "4a260dad.a41244",
-        "name": "Check_source",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "cont",
-                "v": "\"source\":1",
-                "vt": "str"
-            },
-            {
-                "t": "cont",
-                "v": "\"source\":2",
-                "vt": "str"
-            },
-            {
-                "t": "cont",
-                "v": "\"source\":3",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 3,
-        "x": 140,
-        "y": 460,
-        "wires": [
-            [
-                "14e8a104.7934ef"
-            ],
-            [
-                "24b3dc41.c3a014"
-            ],
-            [
-                "2dc24aa3.096706"
+                "10fe4af6.eaa3a5",
+                "1856e6dc.453a19"
             ]
         ]
     },
@@ -109,18 +67,14 @@
         "type": "function",
         "z": "4a260dad.a41244",
         "name": "Variable Globale",
-        "func": "// Définition d’une variable globale\nglobal.set(\"check_0\",{\"cpt\":0});\nif(global.get(\"check_0\")===0){\n    global.set(\"latitude1\",0);\n    global.set(\"longitude1\",0);\n    global.set(\"latitude2\",0);\n    global.set(\"longitude2\",0);\n    global.set(\"latitude3\",0);\n    global.set(\"longitude3\",0);\n    global.set(\"taille_max\",12);\n    global.set(\"tab_historique1\", []);\n    global.set(\"tab_historique2\", []);\n    global.set(\"tab_historique3\", []);\n\n}\n\n//var data[];\n//var tab_latitude1 = global.get(\"tableau\")|| data;\nvar msg1 = {\"payload\":global.get(\"check_0\")};\nglobal.set(\"check_0\",1);\nreturn [msg,msg1];",
+        "func": "// Définition d’une variable globale\nglobal.set(\"check_0\",{\"cpt\":0});\n// node.warn(global.get(\"check_0\"));\n\nvar position = global.get(\"position\") || [];\nposition[1] = {\"lat\":43.7,\"lng\":7.4,\"taille\":10,\"histor\":[]};\nposition[2] = {\"lat\":43.8,\"lng\":7.4,\"taille\":10,\"histor\":[]};\nposition[3] = {\"lat\":43.9,\"lng\":7.4,\"taille\":10,\"histor\":[]};\nglobal.set(\"position\",position);\n\nif(global.get(\"check_0\")===0){\n    node.debug(\"I am in the if statement\");\n    global.set(\"latitude1\",0);\n    global.set(\"longitude1\",0);\n    global.set(\"latitude2\",0);\n    global.set(\"longitude2\",0);\n    global.set(\"latitude3\",0);\n    global.set(\"longitude3\",0);\n    global.set(\"taille_max\",12);\n    global.set(\"tab_historique1\", []);\n    global.set(\"tab_historique2\", []);\n    global.set(\"tab_historique3\", []);\n}\n\n//global.set(\"exmp\") || {\"data\":{\"lat1\":43.12,\"lat2\":43.123}};\nvar msg1 = {\"payload\":global.get(\"check_0\")};\nglobal.set(\"check_0\",1);\nreturn [msg,msg1];",
         "outputs": 2,
         "noerr": 0,
-        "x": 180,
-        "y": 280,
+        "x": 160,
+        "y": 600,
         "wires": [
-            [
-                "79ea1305.7030ec"
-            ],
-            [
-                "c3cbaa7b.0e4b08"
-            ]
+            [],
+            []
         ]
     },
     {
@@ -128,50 +82,28 @@
         "type": "function",
         "z": "4a260dad.a41244",
         "name": "Set_Coordonnées2",
-        "func": "var data = JSON.parse(msg.payload);\n//var msg1={\"payload\": data.latitude};\nglobal.set(\"latitude2\",data.latitude);\nglobal.set(\"longitude2\",data.longitude);\nreturn msg;",
+        "func": "var data = JSON.parse(msg.payload);\n// var msg2={\"payload\": data.source};\n\nvar tab_hist = global.get(\"tab_historique2\")||[];\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\");\nvar lat = data.latitude;\nvar lon = data.longitude;\nif(taille >= taille_max) {\n    tab_hist.length = taille_max;\n    tab_hist.shift();\n    tab_hist.shift(); // supprime 2 éléments du début\n}\ntab_hist.push(lat, lon); // ajoute 2 éléments au final\nglobal.set(\"tab_historique2\", tab_hist);\nmsg.payload = tab_hist;\n\nglobal.set(\"latitude2\", lat);\nglobal.set(\"longitude2\", lon);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 410,
-        "y": 460,
+        "x": 170,
+        "y": 680,
         "wires": [
-            [
-                "ce1b6b95.6ff598",
-                "1c22ad72.ebe2e3"
-            ]
-        ]
-    },
-    {
-        "id": "2dc24aa3.096706",
-        "type": "function",
-        "z": "4a260dad.a41244",
-        "name": "Set_Coordonnées3",
-        "func": "var data = JSON.parse(msg.payload);\n//var msg2={\"payload\": data.latitude};\nglobal.set(\"latitude3\",data.latitude);\nglobal.set(\"longitude3\",data.longitude);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 410,
-        "y": 540,
-        "wires": [
-            [
-                "ce1b6b95.6ff598",
-                "87b3b8c2.012328"
-            ]
+            []
         ]
     },
     {
         "id": "14e8a104.7934ef",
         "type": "function",
         "z": "4a260dad.a41244",
-        "name": "Set_Coordonnées1",
-        "func": "var data = JSON.parse(msg.payload);\n//var msg2={\"payload\": data.latitude};\nglobal.set(\"latitude1\",data.latitude);\nglobal.set(\"longitude1\",data.longitude);\nreturn msg;",
-        "outputs": 1,
+        "name": "Set_Coordonnées",
+        "func": "var data = JSON.parse(msg.payload);\nvar id = data.source;\nid = parseInt(id/10);\n// var msg2={\"payload\": data.source};\n\nvar position = global.get(\"position\") || [];\n// position[1] = {\"latitude\":43.7,\"longitude\":7.4,\"taille\":10,\"histor\":[]};\n// positoin[2] = {\"latitude\":43.8,\"longitude\":7.4,\"taille\":10,\"histor\":[]};\n// positoin[3] = {\"latitude\":43.9,\"longitude\":7.4,\"taille\":10,\"histor\":[]};\n\nif(typeof position[id]==\"undefined\") {\n    position[id] = {\"latitude\":43.7,\"longitude\":7.4,\"taille\":10,\"histor\":[]};\n}\n\n// var tab_hist = global.get(\"tab_historique1\")||[];\n\nvar tab_hist = position[id].histor;\nif(typeof tab_hist==\"undefined\") {\n    tab_hist = [];\n    node.error(\"dans if undefined\");\n}\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\");\nvar lat = data.latitude;\nvar lon = data.longitude;\nif(taille >= taille_max) {\n    // tab_hist.length = taille_max;\n    // tab_hist.shift();\n    tab_hist.shift(); // supprime 2 éléments du début\n}\nvar pos = {\"lat\":lat,\"lng\":lon};\ntab_hist.push(pos); // ajoute 2 éléments au final\nposition[id].lat = lat;\nposition[id].lng = lon;\nposition[id].histor = tab_hist;\n// global.set(\"position\", tab_hist);\n// msg.payload = tab_hist;\nmsg.payload = [lat, lon];\n\nnode.error(\"id \"+id+\" lat \"+lat+\" lon \"+lon+\" max \"+taille_max+\" taille \"+taille);\nnode.error(JSON.stringify(position));\n\n// global.set(\"latitude1\", lat);\n// global.set(\"longitude1\", lon);\nglobal.set(\"position\",position);\n\nvar msg1 = {\"payload\":tab_hist};\n\nreturn [msg,msg1];",
+        "outputs": 2,
         "noerr": 0,
-        "x": 410,
-        "y": 380,
+        "x": 170,
+        "y": 640,
         "wires": [
-            [
-                "ce1b6b95.6ff598",
-                "24637c0f.5c8054"
-            ]
+            [],
+            []
         ]
     },
     {
@@ -186,23 +118,23 @@
         "complete": "payload",
         "targetType": "msg",
         "x": 890,
-        "y": 160,
+        "y": 260,
         "wires": []
     },
     {
         "id": "97874d7d.e3693",
         "type": "ui_text",
         "z": "4a260dad.a41244",
-        "group": "e8a00aa3.a82a88",
+        "group": "79b4d4c5.c437bc",
         "order": 0,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Latitude",
+        "label": "Latitude T",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "x": 1060,
-        "y": 260,
+        "y": 360,
         "wires": []
     },
     {
@@ -214,11 +146,11 @@
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Longitude",
+        "label": "Latitude G",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1060,
-        "y": 340,
+        "x": 1070,
+        "y": 440,
         "wires": []
     },
     {
@@ -233,40 +165,40 @@
         "label": "Maison-Gateway(en m)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1110,
-        "y": 220,
+        "x": 1370,
+        "y": 320,
         "wires": []
     },
     {
         "id": "55782264.70f8fc",
         "type": "ui_text",
         "z": "4a260dad.a41244",
-        "group": "af307f70.1d4e6",
+        "group": "79b4d4c5.c437bc",
         "order": 0,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Latitude",
+        "label": "Longitude T",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1060,
-        "y": 300,
+        "x": 1070,
+        "y": 400,
         "wires": []
     },
     {
         "id": "38412395.10dd2c",
         "type": "ui_text",
         "z": "4a260dad.a41244",
-        "group": "af307f70.1d4e6",
+        "group": "e8a00aa3.a82a88",
         "order": 0,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Longitude",
+        "label": "Longitude G",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1060,
-        "y": 380,
+        "x": 1070,
+        "y": 480,
         "wires": []
     },
     {
@@ -281,40 +213,40 @@
         "label": "Terrain-Gateway(en m)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1100,
-        "y": 500,
+        "x": 1360,
+        "y": 600,
         "wires": []
     },
     {
         "id": "2db0b208.fa708e",
         "type": "ui_text",
         "z": "4a260dad.a41244",
-        "group": "79b4d4c5.c437bc",
+        "group": "af307f70.1d4e6",
         "order": 0,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Latitude",
+        "label": "Latitude M",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1060,
-        "y": 420,
+        "x": 1070,
+        "y": 520,
         "wires": []
     },
     {
         "id": "f2fbd6c3.846ed8",
         "type": "ui_text",
         "z": "4a260dad.a41244",
-        "group": "79b4d4c5.c437bc",
+        "group": "af307f70.1d4e6",
         "order": 0,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Longitude",
+        "label": "Longitude M",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1060,
-        "y": 460,
+        "x": 1070,
+        "y": 560,
         "wires": []
     },
     {
@@ -329,8 +261,8 @@
         "label": "Distance Maison-Gateway(en m)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1420,
-        "y": 180,
+        "x": 1400,
+        "y": 280,
         "wires": []
     },
     {
@@ -345,8 +277,8 @@
         "label": "Distance Terrain-Gateway(en m)",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
-        "x": 1370,
-        "y": 540,
+        "x": 1390,
+        "y": 640,
         "wires": []
     },
     {
@@ -358,10 +290,11 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1100,
-        "y": 540,
+        "y": 600,
         "wires": [
             [
-                "682384d9.177fbc"
+                "682384d9.177fbc",
+                "275f1559.fe485a"
             ]
         ]
     },
@@ -374,107 +307,91 @@
         "outputs": 1,
         "noerr": 0,
         "x": 1100,
-        "y": 180,
+        "y": 320,
         "wires": [
             [
-                "6176752f.ea35ec"
+                "6176752f.ea35ec",
+                "87069892.110fb8"
             ]
         ]
     },
     {
-        "id": "c3cbaa7b.0e4b08",
+        "id": "bcb7a054.7e292",
         "type": "debug",
         "z": "4a260dad.a41244",
-        "name": "debug tableau",
+        "name": "",
         "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "payload",
         "targetType": "msg",
-        "x": 430,
+        "x": 670,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "10fe4af6.eaa3a5",
+        "type": "debug",
+        "z": "4a260dad.a41244",
+        "name": "mqtt",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 450,
         "y": 280,
         "wires": []
     },
     {
-        "id": "24637c0f.5c8054",
+        "id": "a1ea3448.b62668",
+        "type": "link out",
+        "z": "4a260dad.a41244",
+        "name": "mise a jour",
+        "links": [
+            "7a56b0aa.3c4d4"
+        ],
+        "x": 615,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "1856e6dc.453a19",
         "type": "function",
         "z": "4a260dad.a41244",
-        "name": "Ajouter lat/lon 1 historique",
-        "func": "var tab_hist = global.get(\"tab_historique1\");\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\");\nvar data = JSON.parse(msg.payload);\nvar lat = data.latitude;\nvar lon = data.longitude;\nif(taille >= taille_max) {\n    tab_hist.shift();\n    tab_hist.shift();\n}\ntab_hist.push(lat, lon);\nglobal.set(\"tab_historique1\", tab_hist);\n\n// msg.payload = lat;\n// var msg1={\"payload\": lon};\nvar msg2={\"payload\": global.get(\"tab_historique1\")};\n// var msg3={\"payload\": taille};\n// var msg4={\"payload\": taille_max};\n\nreturn [msg,msg2];",
+        "name": "Variable Globale",
+        "func": "var position = global.get(\"position\");\nif (typeof position === \"undefined\") {\n    position = [];\n    position[0] = {\"lat\":0,\"lng\":0,\"taille\":10,\"histor\":[]};\n    position[1] = {\"lat\":0,\"lng\":0,\"taille\":10,\"histor\":[]};\n    position[2] = {\"lat\":0,\"lng\":0,\"taille\":10,\"histor\":[]};\n    position[3] = {\"lat\":0,\"lng\":0,\"taille\":10,\"histor\":[]};\n    // position[4] = {\"lat\":0,\"lng\":0,\"taille\":10,\"histor\":[]};\n    global.set(\"position\",position);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 180,
+        "y": 460,
+        "wires": [
+            [
+                "8a6a80b5.72aca"
+            ]
+        ]
+    },
+    {
+        "id": "8a6a80b5.72aca",
+        "type": "function",
+        "z": "4a260dad.a41244",
+        "name": "Set_Coordonnées",
+        "func": "var data = JSON.parse(msg.payload);\nvar id = data.source;\nid = parseInt(id/10);\n\nvar position = global.get(\"position\");\n\nif(typeof position[id]==\"undefined\") {\n    position[id] = {\"latitude\":0,\"longitude\":0,\"taille\":10,\"histor\":[]};\n}\n\nvar tab_hist = position[id].histor;\nif(typeof tab_hist==\"undefined\") {\n    tab_hist = [];\n    node.error(\"dans if undefined\");\n}\n\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\")|| 12;\nvar lat = data.latitude;\nvar lng = data.longitude;\nif(taille >= taille_max) {\n    tab_hist.shift(); // supprime l'élément du début\n}\nvar pos = {\"lat\":lat,\"lng\":lng};\ntab_hist.push(pos); // ajoute l'élément au final\nposition[id].lat = lat;\nposition[id].lng = lng;\nposition[id].histor = tab_hist;\nmsg.payload = [lat, lng];\nvar msg1 = {\"payload\":tab_hist};\n\nnode.error(\"id \"+id+\" lat \"+lat+\" lng \"+lng+\" max \"+taille_max+\" taille \"+taille);\nnode.error(JSON.parse(JSON.stringify(position)));\n\nglobal.set(\"position\",position);\n\nreturn [msg,msg1];",
         "outputs": 2,
         "noerr": 0,
-        "x": 710,
-        "y": 480,
-        "wires": [
-            [],
-            [
-                "10c545ff.e5c48a"
-            ]
-        ]
-    },
-    {
-        "id": "1c22ad72.ebe2e3",
-        "type": "function",
-        "z": "4a260dad.a41244",
-        "name": "Ajouter lat/lon 2 historique",
-        "func": "var tab_hist = global.get(\"tab_historique2\");\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\");\nvar data = JSON.parse(msg.payload);\nvar lat = data.latitude;\nvar lon = data.longitude;\nif(taille >= taille_max) {\n    tab_hist.shift();\n    tab_hist.shift();\n}\ntab_hist.push(lat, lon);\nglobal.set(\"tab_historique2\", tab_hist);\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 710,
-        "y": 540,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "87b3b8c2.012328",
-        "type": "function",
-        "z": "4a260dad.a41244",
-        "name": "Ajouter lat/lon 3 historique",
-        "func": "var tab_hist = global.get(\"tab_historique3\");\nvar taille = tab_hist.length;\nvar taille_max = global.get(\"taille_max\");\nvar data = JSON.parse(msg.payload);\nvar lat = data.latitude;\nvar lon = data.longitude;\nif(taille >= taille_max) {\n    tab_hist.shift();\n    tab_hist.shift();\n}\ntab_hist.push(lat, lon);\nglobal.set(\"tab_historique3\", tab_hist);\n\n// msg.payload = lat;\n// var msg1={\"payload\": lon};\n// var msg2={\"payload\": global.get(\"tab_historique3\")};\n// var msg3={\"payload\": taille};\n\nreturn msg;\n\n/*var tab_lat, var_lon, taille;\nswitch(JSON.parce(msg.payload)) {\n    case 1:\n        tab_lat = global.get(\"tab_latitude1\");\n        tab_lon = global.get(\"tab_longitude1\");\n        taille = global.get(\"tab_latitude1.length\");\n        break;\n    case 2:\n        tab_lat = global.get(\"tab_latitude2\");\n        tab_lon = global.get(\"tab_longitude2\");\n        taille = global.get(\"tab_latitude2.length\");\n        break;\n    case 3:\n        tab_lat = global.get(\"tab_latitude3\");\n        tab_lon = global.get(\"tab_longitude3\");\n        taille = global.get(\"tab_latitude3.length\");\n        break;\n    default:\n        break;\n}*/",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 710,
-        "y": 600,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "4d44c112.7766b",
-        "type": "inject",
-        "z": "4a260dad.a41244",
-        "name": "inject GPS",
-        "topic": "",
-        "payload": "{\"latitude\":43.623901,\"longitude\":7.052367}",
-        "payloadType": "str",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "x": 470,
-        "y": 660,
+        "x": 410,
+        "y": 460,
         "wires": [
             [
-                "24637c0f.5c8054"
+                "ce1b6b95.6ff598",
+                "a1ea3448.b62668"
+            ],
+            [
+                "bcb7a054.7e292"
             ]
         ]
-    },
-    {
-        "id": "10c545ff.e5c48a",
-        "type": "debug",
-        "z": "4a260dad.a41244",
-        "name": "tableau 11",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "x": 960,
-        "y": 620,
-        "wires": []
     },
     {
         "id": "f07646ea.0ac518",
@@ -497,6 +414,17 @@
         "willTopic": "",
         "willQos": "0",
         "willPayload": ""
+    },
+    {
+        "id": "79b4d4c5.c437bc",
+        "type": "ui_group",
+        "z": "",
+        "name": "Coordonnées_terrain",
+        "tab": "4a9de958.1e3f68",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
     },
     {
         "id": "e8a00aa3.a82a88",
@@ -527,17 +455,6 @@
         "name": "Coordonnées_maison",
         "tab": "4a9de958.1e3f68",
         "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": false
-    },
-    {
-        "id": "79b4d4c5.c437bc",
-        "type": "ui_group",
-        "z": "",
-        "name": "Coordonnées_terrain",
-        "tab": "4a9de958.1e3f68",
-        "order": 4,
         "disp": true,
         "width": "6",
         "collapse": false

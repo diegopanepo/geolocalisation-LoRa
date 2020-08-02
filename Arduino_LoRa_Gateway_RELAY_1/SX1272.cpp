@@ -148,8 +148,8 @@ SX1272::SX1272()
     // Initialize class variables
     _bandwidth = BW_125;
     _codingRate = CR_5;
-    _spreadingFactor = SF_7;
-    _channel = CH_12_900;
+    _spreadingFactor = SF_12;//SF_7;  //DMV
+    _channel = CH_17_868;//CH_12_900;
     _header = HEADER_ON;
     _CRC = CRC_OFF;
     _modem = FSK;

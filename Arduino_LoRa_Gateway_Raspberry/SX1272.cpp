@@ -149,7 +149,7 @@ SX1272::SX1272()
     _bandwidth = BW_125;
     _codingRate = CR_5;
     _spreadingFactor = SF_12;
-    _channel = CH_18_868;//CH_12_900;
+    _channel = CH_12_900;  // DMV
     _header = HEADER_ON;
     _CRC = CRC_OFF;
     _modem = FSK;
@@ -217,7 +217,7 @@ void SX1272::RxChainCalibration()
         }
     
         // Sets a Frequency in HF band
-        setChannel(CH_18_868); // DMV
+        setChannel(CH_17_868); // DMV
     
         // Launch Rx chain calibration for HF band
         writeRegister( REG_IMAGE_CAL, ( readRegister( REG_IMAGE_CAL ) & RF_IMAGECAL_IMAGECAL_MASK ) | RF_IMAGECAL_IMAGECAL_START );

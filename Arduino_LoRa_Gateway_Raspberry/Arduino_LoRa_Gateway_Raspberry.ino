@@ -706,7 +706,7 @@ void startConfig() {
   }
   else { */
 
-    e = sx1272.setChannel(CH_18_868); // DMV
+    e = sx1272.setChannel(CH_17_868); // DMV
     //PRINT_CSTSTR("%s","^$Frequency ");
     //PRINT_VALUE("%f", 868.0);
     //PRINT_CSTSTR("%s",": state ");      

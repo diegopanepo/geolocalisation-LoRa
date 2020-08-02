@@ -1,19 +1,323 @@
 [
     {
+        "id": "245d917e.be4646",
+        "type": "tab",
+        "label": "Maps",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f21c53e8.cb9d38",
+        "type": "template",
+        "z": "245d917e.be4646",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Owntracks & Node-Red Live Map</title>\n  <script type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js\"></script>\n  <script type=\"text/javascript\" src=\"https://maps.google.com/maps/api/js?sensor=true\"></script>\n  <script type=\"text/javascript\" src=\"https://yourjavascript.com/4594301102/gmaps.js\"></script>\n \n  <style type=\"text/css\" media=\"screen\">\n    #map {\n      position:absolute;\n      top: 0; bottom: 0; left: 0; right: 0;\n    }\n  </style>\n</head>\n<body>\n \n  <div id=\"map\"></div>\n  <script type=\"text/javascript\">\n  var socketaddy = \"ws://noderedpolytech.eu-gb.mybluemix.net/ws/location\";\n    var map;\n    var sock;\n    $(document).ready(function(){\n      \n      map = new GMaps({\n        div: '#map',\n        lat: -12.043333,\n        lng: -77.028333\n      });\n      \n      \n      sock = new WebSocket(socketaddy);\n      sock.onopen = function(){ console.log(\"Connected websocket\");\n\t      console.log(\"Sending ping..\");\n\t      sock.send(\"Ping!\");\n\t      console.log(\"Ping sent..\");\n      };\n      sock.onerror = function(){ console.log(\"Websocket error\"); };\n      sock.onmessage = function(evt){\n        var latlng = JSON.parse(evt.data);\n        var array = $.map(latlng, function(el) {\n  \t\t\treturn [[el.lat, el.lng]];\n\t\t\t});\n        \n        map.removeMarkers();\n        map.removePolylines();\n       \tconsole.log(\"Got marker at \" + latlng[0].lat + \", \" + latlng[0].lng, latlng);\n        map.setZoom(17);\n       \tmap.setCenter(latlng[0].lat, latlng[0].lng);\n        map.addMarkers(latlng);\n      \tmap.drawPolyline({\n\t\t  path: array,\n\t\t  strokeColor: '#131540',\n\t\t  strokeOpacity: 0.6,\n\t\t  strokeWeight: 6\n\t\t});\n      }\n    });\n  </script>\n</body>\n</html>",
+        "x": 360,
+        "y": 60,
+        "wires": [
+            [
+                "16bd39e4.7e1fde"
+            ]
+        ]
+    },
+    {
+        "id": "16bd39e4.7e1fde",
+        "type": "http response",
+        "z": "245d917e.be4646",
+        "name": "",
+        "x": 544,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "192a28d1.793d8f",
+        "type": "http in",
+        "z": "245d917e.be4646",
+        "name": "",
+        "url": "/map1",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 139,
+        "y": 65,
+        "wires": [
+            [
+                "f21c53e8.cb9d38"
+            ]
+        ]
+    },
+    {
+        "id": "7cfcfdce.a9e204",
+        "type": "inject",
+        "z": "245d917e.be4646",
+        "name": "",
+        "topic": "",
+        "payload": "43.737450, 7.048596",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "efe90879.f6e228"
+            ]
+        ]
+    },
+    {
+        "id": "df434a4a.c68a28",
+        "type": "ui_template",
+        "z": "245d917e.be4646",
+        "group": "5f254d3e.2518ec",
+        "name": "Map widget",
+        "order": 1,
+        "width": "12",
+        "height": "9",
+        "format": "<iframe \n    id='frame_map'\n    src='/map'\n    width='100%'  \n    height='100%'\n>\n</iframe>\n\n<script>\nscope.$watch('msg.payload', function(newv, oldv, scope) {\n    $(\"#frame_map\")[0].contentWindow.postMessage(JSON.stringify(newv), '*');\n});\n</script>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "x": 690,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dd594231.914e58",
+        "type": "http in",
+        "z": "245d917e.be4646",
+        "name": "",
+        "url": "/map",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 360,
+        "y": 340,
+        "wires": [
+            [
+                "bf2f66e2.0a3b78",
+                "673bff71.b8522"
+            ]
+        ]
+    },
+    {
         "id": "1bfce95a.d815e7",
         "type": "template",
         "z": "245d917e.be4646",
         "name": "Map",
         "field": "payload",
-        "fieldType": "msg",
+        "fieldType": "global",
+        "format": "javascript",
         "syntax": "mustache",
-        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Supply Chain</title>\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js\"></script>\n  <script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyAxuxffizWf5rlO5UHZE4Rt4POasJY0om4\"></script>\n  <script src=\"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js\"></script>\n\n  <style type=\"text/css\" media=\"screen\">\n    #map {\n      position:absolute;\n      top: 0; bottom: 0; left: 0; right: 0;\n    }\n  </style>\n</head>\n<body>\n  <div id=\"map\"></div>\n  <script type=\"text/javascript\">\n\n$(document).ready(function(){\n  var MAP_ZOOM = 14;//14\n  var MARKER_SIZE = 24;\n  \n  var map = new google.maps.Map(document.getElementById('map'), {\n      zoom: MAP_ZOOM,\n      center: {lat: 43.6239695, lng: 7.0509146}, //{lat: 43.737450, lng: 7.048596}\n      //mapTypeId: 'satellite'\n      mapTypeId: 'terrain'\n    });\n\n//flightPlanCoordinates\n    //var hist11 = global.get(\"tab_historique1\")[0];\n/*    var cheminTracker11 = [\n          {lat: 43.6234, lng: 7.0523},\n          {lat: 43.6235, lng: 7.0524},\n          {lat: 43.6236, lng: 7.0523},\n          {lat: 43.6238, lng: 7.0525}\n        ];\n    var flightPath11 = new google.maps.Polyline({\n      path: cheminTracker11,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n\n    flightPath11.setMap(map);\n*/\n/*\n    var hist11 = global.get(\"tab_historique1\");\n    var taille11 = hist11.length;\n    var cheminTracker11 = [];\n    // for(let i = 0; i < taille11; i++) {\n    //     cheminTracker11.push({lat: hist11[i++], lng: hist11[i]});\n    // }\n    var flightPath11 = new google.maps.Polyline({\n      path: cheminTracker11,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n    \n    flightPath11.setMap(map);\n*/\n    \n  var markers = [];\n  var tab = [];\n  \n  window.onmessage = function(evt){\n    console.log(\"ENTERING ON MESSAGE\");  \n    /*for (var i = 0; i < markers.length; i++) {\n      markers[i].setMap(null);\n    }*/\n    var data = JSON.parse(evt.data);\n    \n    var marker1 = tab[data.description]|| null;\n    if (marker1 !=null){\n        marker1.setMap(null);\n    }\n    \n    \n    var data1 = [];\n    if (typeof data.fixed_icon != \"undefined\") {\n        for (var i=0; i<data.fixed_icon.length ; i++ ) {\n            data.fixed_icon[i].fixed_icon = true;\n            data1.push(data.fixed_icon[i]);\n        }\n    }\n    data.fixed_icon = false;\n    data1.push(data);\n    console.log(\"DATA:\"+JSON.stringify(data1));\n    map.setZoom(MAP_ZOOM);\n    \n    markers = data1.map(function(el, i) {\n      var marker;\n      if (el.fixed_icon === true) {\n         marker = new google.maps.Marker({\n            position: el,\n            icon: {\n              url: el.iconUrl,\n              scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n            },\n            map:map\n         });\n         tab[data.description]=marker;\n      } else {\n         marker = new google.maps.Marker({\n            position: el,\n            icon: {\n            //path: google.maps.SymbolPath.CIRCLE,\n            scale: 3\n            },\n        //icon: {\n        //  url: el.iconUrl,\n        //  scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n        //},\n        map:map\n      });\n          tab[data.description]=marker;\n      }\n      //tab[data.description]=marker;\n      google.maps.event.addListener(marker , 'click', function(){\n        var infowindow = new google.maps.InfoWindow({\n          content:el.description,\n          position: el,\n        });\n        infowindow.open(map);\n        setTimeout(function () { infowindow.close(); }, 2000);\n      });\n      return marker\n    });\n  }\n});\n  </script>\n</body>\n</html>",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Supply Chain</title>\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js\"></script>\n  <script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyAxuxffizWf5rlO5UHZE4Rt4POasJY0om4\"></script>\n  <script src=\"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js\"></script>\n\n  <style type=\"text/css\" media=\"screen\">\n    #map {\n      position:absolute;\n      top: 0; bottom: 0; left: 0; right: 0;\n    }\n  </style>\n</head>\n<body>\n  <div id=\"map\"></div>\n  <script type=\"text/javascript\">\n\n$(document).ready(function(){\n  var MAP_ZOOM = 14;//14\n  var MARKER_SIZE = 24;\n  \n  var map = new google.maps.Map(document.getElementById('map'), {\n      zoom: MAP_ZOOM,\n      center: {lat: 43.6239695, lng: 7.0509146}, //{lat: 43.737450, lng: 7.048596}\n      //mapTypeId: 'satellite'\n      mapTypeId: 'terrain'\n    });\n\n//flightPlanCoordinates\n    //var hist11 = global.get(\"latitude1\");\n    var cheminTracker11 = [\n          {lat: 43.6234, lng: 7.0523},\n          {lat: 43.6235, lng: 7.0524},\n          {lat: 43.6236, lng: 7.0523},\n          {lat: 43.6238, lng: 7.0525}\n        ];\n    var flightPath11 = new google.maps.Polyline({\n      path: cheminTracker11,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n\n    flightPath11.setMap(map);\n\n/*\n    var hist11 = global.get(\"tab_historique1\");\n    var taille11 = hist11.length;\n    var cheminTracker11 = [];\n    // for(let i = 0; i < taille11; i++) {\n    //     cheminTracker11.push({lat: hist11[i++], lng: hist11[i]});\n    // }\n    var flightPath11 = new google.maps.Polyline({\n      path: cheminTracker11,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n    \n    flightPath11.setMap(map);\n*/\n    \n  var markers = [];\n  var tab = [];\n  \n  window.onmessage = function(evt){\n    console.log(\"ENTERING ON MESSAGE\");  \n    var input = JSON.parse(evt.data); // commande à partir du json //data->input\n    /*for (var i = 0; i < markers.length; i++) { //commande: clean \n      markers[i].setMap(null);\n    }*/\n    console.log(input);\n   \n    // commande : afficher points\n    // commande : afficher tracé \n    \n    var marker1 = tab[data.description] || null;\n    if (marker1 != null){\n        marker1.setMap(null);\n    }\n    \n    \n    var data1 = input.data; //{commande: ; data:{lat:  ;lon:}\n   /* if (typeof data.fixed_icon != \"undefined\") {\n        for (var i=0; i<data.fixed_icon.length ; i++ ) {\n            data.fixed_icon[i].fixed_icon = true;\n            data1.push(data.fixed_icon[i]);\n        }\n    }\n    data.fixed_icon = false;\n    data1.push(data);\n    console.log(\"DATA:\"+JSON.stringify(data1));*/\n    \n    map.setZoom(MAP_ZOOM);\n    \n    markers = data1.map(function(el, i) {\n      var marker;\n     /* if (el.fixed_icon === true) {\n         marker = new google.maps.Marker({\n            position: el,\n            icon: {\n              url: el.iconUrl,\n              scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n            },\n            map:map\n         });\n         tab[data.description]=marker;\n      } else {*/\n         marker = new google.maps.Marker({\n            position: el,\n            icon: {\n            //path: google.maps.SymbolPath.CIRCLE,\n            scale: 3\n            },\n        //icon: {\n        //  url: el.iconUrl,\n        //  scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n        //},\n        map:map\n      });\n          tab[data.description]=marker;\n      }\n      //tab[data.description]=marker;\n      google.maps.event.addListener(marker , 'click', function(){\n        var infowindow = new google.maps.InfoWindow({\n          content:el.description,\n          position: el,\n        });\n        infowindow.open(map);\n        setTimeout(function () { infowindow.close(); }, 2000);\n      });\n      return marker\n    });\n  }\n});\n  </script>\n</body>\n</html>",
         "x": 530,
         "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "535eac65.78208c",
+        "type": "http response",
+        "z": "245d917e.be4646",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 690,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f35ea6a0.5358b",
+        "type": "debug",
+        "z": "245d917e.be4646",
+        "name": "Location",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 680,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "34f1da4e.088236",
+        "type": "ui_text_input",
+        "z": "245d917e.be4646",
+        "name": "",
+        "label": "Enter Coordinates:",
+        "tooltip": "",
+        "group": "5f254d3e.2518ec",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "efe90879.f6e228"
+            ]
+        ]
+    },
+    {
+        "id": "33103a94.526dfe",
+        "type": "comment",
+        "z": "245d917e.be4646",
+        "name": "NOT used but can be example",
+        "info": "",
+        "x": 160,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "37503ef3.10eb52",
+        "type": "inject",
+        "z": "245d917e.be4646",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "efe90879.f6e228"
+            ]
+        ]
+    },
+    {
+        "id": "190f3863.7769f8",
+        "type": "template",
+        "z": "245d917e.be4646",
+        "name": "MapOld2",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Supply Chain</title>\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js\"></script>\n  <script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyAxuxffizWf5rlO5UHZE4Rt4POasJY0om4\"></script>\n  <script src=\"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js\"></script>\n\n  <style type=\"text/css\" media=\"screen\">\n    #map {\n      position:absolute;\n      top: 0; bottom: 0; left: 0; right: 0;\n    }\n  </style>\n</head>\n<body>\n  <div id=\"map\"></div>\n  <script type=\"text/javascript\">\n\n$(document).ready(function(){\n  var MAP_ZOOM = 14;//14\n  var MARKER_SIZE = 24;\n  \n  var map = new google.maps.Map(document.getElementById('map'), {\n      zoom: MAP_ZOOM,\n      center: {lat: 43.6239695, lng: 7.0509146}, //{lat: 43.737450, lng: 7.048596}\n      //mapTypeId: 'satellite'\n      mapTypeId: 'terrain'\n    });\n\n/*\n    var flightPlanCoordinates = [   // remplacer avec tableau position.histor[i]\n          {lat: 43.6234, lng: 7.0523},// dans onmessage\n          {lat: 43.6235, lng: 7.0524},\n          {lat: 43.6236, lng: 7.0523},\n          {lat: 43.6238, lng: 7.0525}\n        ];\n    var flightPath11 = new google.maps.Polyline({\n      path: flightPlanCoordinates,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n\n    flightPath11.setMap(map);\n*/    \n  var markers = [];\n  var tab = [];\n  \n  window.onmessage = function(evt){\n    console.log(\"ENTERING ON MESSAGE\");  \n    var data = JSON.parse(evt.data);\n    for(var i = 0; i < markers.length; i++) { // nettoyage des icones\n        markers[i].setMap(null);\n    }\n    // var marker1 = tab[data.description]|| null;\n    // if (marker1 !=null){\n    //     marker1.setMap(null);\n    // }\n    \n    \n    var data1 = [];\n    // if (typeof data.fixed_icon != \"undefined\") {\n    //     for (var i=0; i<data.fixed_icon.length ; i++ ) {\n    //         data.fixed_icon[i].fixed_icon = true;\n    //         data1.push(data.fixed_icon[i]);\n    //     }\n    // }\n    // data.fixed_icon = false;\n    data1.push(data);\n    for(var i = 1; i < data.length; i++) {\n        data1.push(data[i]);\n    }\n    console.log(\"DATA:\"+JSON.stringify(data1));\n    map.setZoom(MAP_ZOOM);\n    \n    markers = data1.map(function(el, i) {\n      var marker;\n    //   if (el.fixed_icon === true) {\n    //      marker = new google.maps.Marker({\n    //         position: el,\n    //         icon: {\n    //           url: el.iconUrl,\n    //           scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n    //         },\n    //         map:map\n    //      });\n    //      tab[data.description]=marker;\n    //   } else {\n        marker = new google.maps.Marker({\n            position: el,\n            icon: {\n            scale: 3\n            },\n            map:map\n        });\n          tab[data.description]=marker;\n    //   }\n      google.maps.event.addListener(marker , 'click', function(){\n        var infowindow = new google.maps.InfoWindow({\n          content:el.description,\n          position: el,\n        });\n        infowindow.open(map);\n        setTimeout(function () { infowindow.close(); }, 2000);\n      });\n      return marker\n    });\n  }\n});\n  </script>\n</body>\n</html>",
+        "x": 540,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bf2f66e2.0a3b78",
+        "type": "debug",
+        "z": "245d917e.be4646",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 330,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "85320d90.ad3b8",
+        "type": "debug",
+        "z": "245d917e.be4646",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 790,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "7a56b0aa.3c4d4",
+        "type": "link in",
+        "z": "245d917e.be4646",
+        "name": "",
+        "links": [
+            "a1ea3448.b62668"
+        ],
+        "x": 215,
+        "y": 260,
+        "wires": [
+            [
+                "efe90879.f6e228"
+            ]
+        ]
+    },
+    {
+        "id": "efe90879.f6e228",
+        "type": "function",
+        "z": "245d917e.be4646",
+        "name": "Get Locations",
+        "func": "var position = global.get(\"position\");\nmsg.payload = position;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "df434a4a.c68a28",
+                "f35ea6a0.5358b"
+            ]
+        ]
+    },
+    {
+        "id": "673bff71.b8522",
+        "type": "template",
+        "z": "245d917e.be4646",
+        "name": "MapV2",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Supply Chain</title>\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js\"></script>\n  <script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyAxuxffizWf5rlO5UHZE4Rt4POasJY0om4\"></script>\n  <script src=\"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js\"></script>\n\n  <style type=\"text/css\" media=\"screen\">\n    #map {\n      position:absolute;\n      top: 0; bottom: 0; left: 0; right: 0;\n    }\n  </style>\n</head>\n<body>\n  <div id=\"map\"></div>\n  <script type=\"text/javascript\">\n\n$(document).ready(function(){\n  var MAP_ZOOM = 14;//14\n  var MARKER_SIZE = 24;\n  \n  var map = new google.maps.Map(document.getElementById('map'), {\n      zoom: MAP_ZOOM,\n      center: {lat: 43.6239695, lng: 7.0509146}, //{lat: 43.737450, lng: 7.048596}\n      //mapTypeId: 'satellite'\n      mapTypeId: 'terrain'\n    });\n\n/*\n    var flightPlanCoordinates = [   // remplacer avec tableau position.histor[i]\n          {lat: 43.6234, lng: 7.0523},// dans onmessage\n          {lat: 43.6235, lng: 7.0524},\n          {lat: 43.6236, lng: 7.0523},\n          {lat: 43.6238, lng: 7.0525}\n        ];\n    var flightPath11 = new google.maps.Polyline({\n      path: flightPlanCoordinates,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n\n    flightPath11.setMap(map);\n*/    \n  var markers = [];\n  var tab = [];\n  var flightPath11;\n  \n  window.onmessage = function(evt){\n    console.log(\"ENTERING ON MESSAGE\");  \n    var data = JSON.parse(evt.data);\n    //cleaning\n    for(var i = 0; i < markers.length; i++) { // nettoyage des icones\n        markers[i].setMap(null);\n    }\n    if (flightPath11) flightPath11.setMap(null);\n    // var marker1 = tab[data.description]|| null;\n    // if (marker1 !=null){\n    //     marker1.setMap(null);\n    // }\n    \n    // chemin parcouru tracker 1\n    var  flightPlanCoordinates = data[1].histor;\n    flightPath11 = new google.maps.Polyline({\n      path: flightPlanCoordinates,\n      geodesic: true,\n      strokeColor: '#FF0000',\n      strokeOpacity: 1.0,\n      strokeWeight: 2\n    });\n\n    flightPath11.setMap(map);\n\n    \n    var data1 = [];\n    // if (typeof data.fixed_icon != \"undefined\") {\n    //     for (var i=0; i<data.fixed_icon.length ; i++ ) {\n    //         data.fixed_icon[i].fixed_icon = true;\n    //         data1.push(data.fixed_icon[i]);\n    //     }\n    // }\n    // data.fixed_icon = false;\n    // data1.push(data);\n    for(var i = 1; i < data.length; i++) {\n        data1.push(data[i]);\n    }\n    console.log(\"DATA:\"+JSON.stringify(data1));\n    map.setZoom(MAP_ZOOM);\n    \n    markers = data1.map(function(el, i) {\n      var marker;\n    //   if (el.fixed_icon === true) {\n    //      marker = new google.maps.Marker({\n    //         position: el,\n    //         icon: {\n    //           url: el.iconUrl,\n    //           scaledSize: new google.maps.Size(MARKER_SIZE, MARKER_SIZE)\n    //         },\n    //         map:map\n    //      });\n    //      tab[data.description]=marker;\n    //   } else {\n        marker = new google.maps.Marker({\n            position: el,\n            icon: {\n            scale: 3\n            },\n            map:map\n        });\n          tab[el.desc]=marker;\n    //   }\n      google.maps.event.addListener(marker , 'click', function(){\n        var infowindow = new google.maps.InfoWindow({\n          content:el.desc,\n          position: el,\n        });\n        infowindow.open(map);\n        setTimeout(function () { infowindow.close(); }, 2000);\n      });\n      return marker\n    });\n  }\n});\n  </script>\n</body>\n</html>",
+        "x": 540,
+        "y": 400,
         "wires": [
             [
                 "535eac65.78208c"
             ]
         ]
+    },
+    {
+        "id": "5f254d3e.2518ec",
+        "type": "ui_group",
+        "z": "",
+        "name": "MOUTON",
+        "tab": "82ac078d.70408",
+        "order": 1,
+        "disp": true,
+        "width": "25",
+        "collapse": false
+    },
+    {
+        "id": "82ac078d.70408",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Maps",
+        "icon": "dashboard",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
     }
 ]

@@ -250,7 +250,7 @@
 // For a Raspberry-based gateway the distribution uses a radio.makefile file that can define MAX_DBM
 //
 #ifndef MAX_DBM
-#define MAX_DBM 14
+#define MAX_DBM 20
 #endif
 
 #ifndef LORA_PREAMBLE_LENGTH
